@@ -22,7 +22,7 @@ resource "aws_security_group_rule" "web-sg-http-rule" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = ["10.0.0.0/24"]
+  cidr_blocks       = ["${var.bastion_host_ip}/32"]
   security_group_id = aws_security_group.web-sg.id
 }
 
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "web-sg-https-rule" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = ["10.0.0.0/24"]
+  cidr_blocks       = ["${var.bastion_host_ip}/32"]
   security_group_id = aws_security_group.web-sg.id
 }
 
@@ -40,6 +40,6 @@ resource "aws_security_group_rule" "web-sg-ssh-rule" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = ["10.0.0.0/24"]
+  cidr_blocks       = ["${var.bastion_host_ip}/32"]
   security_group_id = aws_security_group.web-sg.id
 }

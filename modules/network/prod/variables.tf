@@ -11,3 +11,8 @@ variable "private_subnets" {
 variable "myip" {
     type = list(string)
 }
+
+
+variable "bastion_host_ip" {
+    type = string
+}
