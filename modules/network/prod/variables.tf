@@ -16,3 +16,7 @@ variable "myip" {
 variable "bastion_host_ip" {
     type = string
 }
+
+variable "tgw_id" {
+  type = string
+}

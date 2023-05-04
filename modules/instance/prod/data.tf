@@ -1,7 +1,3 @@
-data "template_file" "webserver_init" {
-    template = file("${path.module}/templates/userdata.sh.tpl")
-}
-
 data "aws_ami" "al" {
    most_recent = true
    owners      = ["amazon"]

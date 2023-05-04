@@ -9,9 +9,6 @@ resource "aws_instance" "webserver" {
     
     key_name                        =   var.keypair_name
     vpc_security_group_ids          =   [var.web_sg]
-
-    user_data                       =   data.template_file.webserver_init.rendered
-
     tags = {
         Name                        =   "${var.prefix}-prod-web-host"
         Managed_by                  =   "terraform"

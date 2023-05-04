@@ -7,6 +7,7 @@ module "main_network" {
 
     // VPC
     vpc_cidr            =   var.main_vpc_cidr
+    prod_vpc_cidr       =   var.prod_vpc_cidr
     
     // Subnet
     public_subnets      =   var.main_public_subnets
@@ -14,6 +15,9 @@ module "main_network" {
     
     // Security Group
     myip  =   var.myip
+
+    // TGW
+    tgw_id = module.tgw.tgw_id
 }
 
 module "main_instance" {
@@ -44,6 +48,7 @@ module "main_alb" {
     instance_ids = module.main_instance.webserver_instances_ids
 }
 
+// Prod
 module "prod_network" {
     source              =   "./modules/network/prod"
 
@@ -59,6 +64,9 @@ module "prod_network" {
     // Security Group
     myip  =   var.myip
     bastion_host_ip = module.main_instance.bastion_instance_private_ip
+
+    // TGW
+    tgw_id = module.tgw.tgw_id
 }
 
 module "prod_instance" {
@@ -72,4 +80,32 @@ module "prod_instance" {
     instance_type = var.instance_type
     private_subnet_ids = module.prod_network.private_subnet_ids
     web_sg = module.prod_network.web_sg_id
+}
+
+// 공통
+module "tgw" {
+      source              =   "./modules/network/tgw"
+
+    // 공통
+    prefix              =   var.prefix
+
+    // Transit Gateway 
+    main_vpc_id             = module.main_network.vpc_id
+    main_private_subnet_ids = module.main_network.private_subnet_ids
+
+    prod_vpc_id             = module.prod_network.vpc_id
+    prod_private_subnet_ids = module.prod_network.private_subnet_ids
+}
+
+module "route53" {
+    source              =   "./modules/network/route53"
+
+    // 공통
+    prefix              =   var.prefix
+
+    main_vpc_id             = module.main_network.vpc_id
+    prod_vpc_id             = module.prod_network.vpc_id
+    alb_domain              = module.main_alb.alb_domain
+    alb_zone                = module.main_alb.alb_zone
+
 }
